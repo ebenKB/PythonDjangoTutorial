@@ -31,13 +31,14 @@ from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
 # using model serializers to reduce verbosity
-class SnippetSerializer(serializers.ModelSerializer):
+class SnippetSerializer(serializers.HyperlinkedModelSerializer):
   owner = serializers.ReadOnlyField(source='owner.username')
+  highlight = serializers.HyperlinkedIdentityField(view_name = 'snippet-highlight', format='html')
   class Meta:
     model= Snippet
-    fields =['id', 'title', 'code', 'linenos', 'language', 'style', 'owner']
+    fields =['url', 'id', 'highlight', 'owner', 'title', 'code', 'linenos', 'language', 'style']
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
   snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
 
   class Meta:
